@@ -8,8 +8,7 @@ const Formulario = () => {
     const [estudios, setEstudios] = React.useState('')
     const [edad, setEdad] = React.useState('')
     const [idiomas, setIdiomas] = React.useState('')
-    const [vacantes, setVacantes] = React.useState('')
-    const [referencia, setReferencia] = React.useState('')
+
 
     const [listaPersonas, setListaPersonas] = React.useState([])
     
@@ -64,14 +63,6 @@ const Formulario = () => {
           setError('Digite idiomas que habla')
           return
         }
-        if(!vacantes.trim()){
-          setError('Digite vacante de interés')
-          return
-        }
-        if(!referencia.trim()){
-          setError('Digite su referencia personal')
-          return
-        }
         try{
             const db = firebase.firestore()
             const nuevaPersona = {
@@ -79,9 +70,7 @@ const Formulario = () => {
                 nombreDescripcion: descripcion,
                 nombreEstudios: estudios,
                 nombreEdad: edad,
-                nombreIdiomas: idiomas,
-                nombreVacantes: vacantes,
-                nombreReferencia: referencia
+                nombreIdiomas: idiomas
 
             }
 
@@ -92,9 +81,7 @@ const Formulario = () => {
                 {id:nanoid(), nombreNombre:nombre, nombreDescripcion:descripcion,
                   nombreEstudios: estudios,
                   nombreEdad: edad,
-                  nombreIdiomas: idiomas,
-                  nombreVacantes: vacantes,
-                  nombreReferencia: referencia }
+                  nombreIdiomas: idiomas}
             ])
 
             e.target.reset()
@@ -103,8 +90,6 @@ const Formulario = () => {
             setEstudios('')
             setEdad('')
             setIdiomas('')
-            setVacantes('')
-            setReferencia('')
             setError(null)
         }catch(error){
             console.log(error)
@@ -118,8 +103,6 @@ const Formulario = () => {
         setEstudios(item.nombreEstudios)
         setEdad(item.nombreEdad)
         setIdiomas(item.nombreIdiomas)
-        setVacantes(item.nombreVacantes)
-        setReferencia(item.nombreReferencia)
         setModoEdicion(true)
         setId(item.id)
     }
@@ -148,14 +131,6 @@ const Formulario = () => {
         setError('Digite idiomas que habla')
         return
       }
-      if(!vacantes.trim()){
-        setError('Digite vacante de interés')
-        return
-      }
-      if(!referencia.trim()){
-        setError('Digite su referencia personal')
-        return
-      }
 
          try{
              const db = firebase.firestore()
@@ -164,9 +139,8 @@ const Formulario = () => {
                 nombreDescripcion: descripcion,
                 nombreEstudios: estudios,
                 nombreEdad: edad,
-                nombreIdiomas: idiomas,
-                nombreVacantes: vacantes,
-                nombreReferencia: referencia
+                nombreIdiomas: idiomas
+            
              })
         
              const arrayEditado = listaPersonas.map(
@@ -174,9 +148,7 @@ const Formulario = () => {
                  nombreDescripcion: descripcion,
                  nombreEstudios: estudios,
                  nombreEdad: edad,
-                 nombreIdiomas: idiomas,
-                 nombreVacantes: vacantes,
-                 nombreReferencia: referencia}: item
+                 nombreIdiomas: idiomas}: item
             )
     
             setListaPersonas(arrayEditado)
@@ -185,8 +157,6 @@ const Formulario = () => {
             setEstudios('')
             setEdad('')
             setIdiomas('')
-            setVacantes('')
-            setReferencia('')
             setId('')
             setModoEdicion(false)
             setError(null)
@@ -219,8 +189,7 @@ const Formulario = () => {
         setEstudios('')
         setEdad('')
         setIdiomas('')
-        setVacantes('')
-        setReferencia('')
+
         setError(null)
     }
 
@@ -299,20 +268,6 @@ const Formulario = () => {
                     onChange={(e)=> setIdiomas(e.target.value)}
                     value = {idiomas}
                     />
-                    <input 
-                    className='form-control mb-2'
-                    type = "text"
-                    placeholder='Ingrese vacantes de interes'
-                    onChange={(e)=> setVacantes(e.target.value)}
-                    value = {vacantes}
-                    />
-                    <input 
-                    className='form-control mb-2'
-                    type = "text"
-                    placeholder='Ingrese una referencia personal'
-                    onChange={(e)=> setReferencia(e.target.value)}
-                    value = {referencia}
-                    />            
                     {
                         modoEdicion ?
                         (
