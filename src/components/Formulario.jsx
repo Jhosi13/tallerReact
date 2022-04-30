@@ -8,6 +8,7 @@ const Formulario = () => {
     const [estudios, setEstudios] = React.useState('')
     const [edad, setEdad] = React.useState('')
     const [idiomas, setIdiomas] = React.useState('')
+    const [pic, setPic] = React.useState('')
 
 
     const [listaPersonas, setListaPersonas] = React.useState([])
@@ -20,7 +21,7 @@ const Formulario = () => {
          const obtenerDatos= async () =>{
              try{
                  const db = firebase.firestore()
-                 const data = await db.collection('personas').get()
+                 const data = await db.collection('personas2').get()
                  const arrayData= data.docs.map(item => (
                      {
                          id:item.id, ...item.data()
@@ -40,7 +41,14 @@ const Formulario = () => {
 
 
     const guardarInfo = async (e) =>{
+        getPic()
         e.preventDefault()
+        
+        if(!nombre.trim()){
+            setError('Digite el nombre')
+             return
+         }
+
 
         if(!nombre.trim()){
            setError('Digite el nombre')
@@ -70,18 +78,20 @@ const Formulario = () => {
                 nombreDescripcion: descripcion,
                 nombreEstudios: estudios,
                 nombreEdad: edad,
-                nombreIdiomas: idiomas
+                nombreIdiomas: idiomas,
+                nombrePic: pic
 
             }
 
-            await db.collection('personas').add(nuevaPersona)
+            await db.collection('personas2').add(nuevaPersona)
 
             setListaPersonas([
                 ...listaPersonas,
                 {id:nanoid(), nombreNombre:nombre, nombreDescripcion:descripcion,
                   nombreEstudios: estudios,
                   nombreEdad: edad,
-                  nombreIdiomas: idiomas}
+                  nombreIdiomas: idiomas,
+                nombrePic: pic}
             ])
 
             e.target.reset()
@@ -134,7 +144,7 @@ const Formulario = () => {
 
          try{
              const db = firebase.firestore()
-             await db.collection('personas').doc(id).update({
+             await db.collection('personas2').doc(id).update({
                 nombreNombre:nombre,
                 nombreDescripcion: descripcion,
                 nombreEstudios: estudios,
@@ -152,12 +162,12 @@ const Formulario = () => {
             )
     
             setListaPersonas(arrayEditado)
+            setId('')
             setNombre('')
             setDescripcion('')
             setEstudios('')
             setEdad('')
             setIdiomas('')
-            setId('')
             setModoEdicion(false)
             setError(null)
 
@@ -171,7 +181,7 @@ const Formulario = () => {
     const eliminar = async id =>{
         try{
             const db = firebase.firestore()
-            await db.collection('personas').doc(id).delete()
+            await db.collection('personas2').doc(id).delete()
             const aux = listaPersonas.filter(item => item.id !== id)
             setListaPersonas(aux)
         }catch(error){
@@ -193,6 +203,17 @@ const Formulario = () => {
         setError(null)
     }
 
+    const getPic = async () => {
+        let randompic = parseInt(Math.random() * 100)
+        try {
+          const res = await fetch("https://picsum.photos/id/" + randompic + "/300")
+          const imgpic = await res.url
+          setPic(imgpic)
+        } catch (error) {
+    
+        }
+      }
+
   return (
     <div className='container mt-5'>
         <h1 className='text-center'>Registro Vacantes  </h1>
@@ -212,6 +233,9 @@ const Formulario = () => {
                                 <span className='lead'>{item.nombreNombre}-{item.nombreDescripcion}-
                                 {item.nombreEstudios}-{item.nombreEdad}-{item.nombreIdiomas}
                                 -{item.nombreVacantes}-{item.nombreReferencia}</span>
+                                <div>
+                                    <img src={item.nombrePic}/>
+                                </div>
                                 <button className='btn btn-danger btn-sm float-end mx-2' onClick={()=> eliminar(item.id)}>
                                 Eliminar
                                 </button>
@@ -275,6 +299,7 @@ const Formulario = () => {
                                 <button 
                                 className='btn btn-warning btn-block'
                                 type='submit'
+                                
                                 >Editar</button>
                                 <button 
                                 className='btn btn-dark btn-block mx-2'
